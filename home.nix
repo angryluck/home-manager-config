@@ -40,7 +40,7 @@
     zathura
     nautilus
     # dolphin
-    # logseq
+    logseq
     # isabelle
     feh
     # virtualbox
@@ -340,7 +340,9 @@
   programs.git = {
     enable = true;
     userName = "angryluck";
-    userEmail = "thomas@surlykke.dk";
+    # Idk why I need this, and don't wan't it visible in public repo
+    # userEmail = TODO;
+    userEmail = "54353246+angryluck@users.noreply.github.com";
   };
 
   programs.yazi.enable = true;
