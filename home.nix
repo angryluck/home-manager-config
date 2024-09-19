@@ -343,6 +343,10 @@
     # Idk why I need this, and don't wan't it visible in public repo
     # userEmail = TODO;
     userEmail = "54353246+angryluck@users.noreply.github.com";
+    extraConfig = {
+      # Set push.autoSetupRemote to true
+      push.autoSetupRemote = "true";
+    };
   };
 
   programs.yazi.enable = true;
