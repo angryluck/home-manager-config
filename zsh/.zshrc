@@ -63,7 +63,10 @@ PROMPT='%F{green}[%F{white}%B%3~%b%F{green}]%(!.#.$) %f'
 
 # Plugin-config
 bindkey '^ ' autosuggest-accept
-bindkey '^[[15;4u' autosuggest-execute #Maps to CTRL+Enter, see alacritty
+# bindkey '^[[15;4u' autosuggest-execute #Maps to CTRL+Enter, see alacritty
+# This one just maps enter to it, but no CTRL...
+# bindkey '^[M' autosuggest-execute #Maps to CTRL+Enter, see alacritty
+# bindkey '^M' autosuggest-execute #Maps to CTRL+Enter, see alacritty
     #config for explanation.
 # See https://stackoverflow.com/questions/16359878/how-to-map-shift-enter
 bindkey '^N' autosuggest-clear

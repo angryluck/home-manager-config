@@ -4,13 +4,13 @@ local act = wezterm.action
 
 config.color_scheme = "Catppuccin Mocha"
 config.font = wezterm.font_with_fallback({
-	"0xProto",
-	-- "Noto Color Emoji",
-	-- "DejaVu Sans Mono",
-	-- "Symbols Nerd Font",
-	-- -- "Inconsolata",
-	-- "Nerd Font Symbols",
-	-- "Noto Fonts Emoji",
+  "0xProto",
+  -- "Noto Color Emoji",
+  -- "DejaVu Sans Mono",
+  -- "Symbols Nerd Font",
+  -- -- "Inconsolata",
+  -- "Nerd Font Symbols",
+  -- "Noto Fonts Emoji",
 })
 -- config.font = wezterm.font_with_fallback {
 --     { family = "0xProto", weight = "Bold" },
@@ -31,56 +31,61 @@ config.animation_fps = 1
 config.cursor_blink_rate = 0
 
 config.keys = {
-	{ key = "n", mods = "ALT", action = act.ActivateTabRelative(1) },
-	{ key = "p", mods = "ALT", action = act.ActivateTabRelative(-1) },
-	{ key = "n", mods = "SHIFT|ALT", action = act.MoveTabRelative(1) },
-	{ key = "p", mods = "SHIFT|ALT", action = act.MoveTabRelative(-1) },
-	{ key = "1", mods = "ALT", action = act.ActivateTab(0) },
-	{ key = "2", mods = "ALT", action = act.ActivateTab(1) },
-	{ key = "3", mods = "ALT", action = act.ActivateTab(2) },
-	{ key = "4", mods = "ALT", action = act.ActivateTab(3) },
-	{ key = "5", mods = "ALT", action = act.ActivateTab(4) },
-	{ key = "6", mods = "ALT", action = act.ActivateTab(5) },
-	{ key = "7", mods = "ALT", action = act.ActivateTab(6) },
-	{ key = "8", mods = "ALT", action = act.ActivateTab(7) },
-	{ key = "9", mods = "ALT", action = act.ActivateTab(8) },
-	{ key = "t", mods = "ALT", action = act.SpawnTab("CurrentPaneDomain") },
-	{ key = "t", mods = "SHIFT|ALT", action = act.ShowTabNavigator },
-	{ key = "w", mods = "ALT", action = act.CloseCurrentTab({ confirm = true }) },
+  { key = "n",     mods = "ALT",         action = act.ActivateTabRelative(1) },
+  { key = "p",     mods = "ALT",         action = act.ActivateTabRelative(-1) },
+  { key = "n",     mods = "SHIFT|ALT",   action = act.MoveTabRelative(1) },
+  { key = "p",     mods = "SHIFT|ALT",   action = act.MoveTabRelative(-1) },
+  { key = "1",     mods = "ALT",         action = act.ActivateTab(0) },
+  { key = "2",     mods = "ALT",         action = act.ActivateTab(1) },
+  { key = "3",     mods = "ALT",         action = act.ActivateTab(2) },
+  { key = "4",     mods = "ALT",         action = act.ActivateTab(3) },
+  { key = "5",     mods = "ALT",         action = act.ActivateTab(4) },
+  { key = "6",     mods = "ALT",         action = act.ActivateTab(5) },
+  { key = "7",     mods = "ALT",         action = act.ActivateTab(6) },
+  { key = "8",     mods = "ALT",         action = act.ActivateTab(7) },
+  { key = "9",     mods = "ALT",         action = act.ActivateTab(8) },
+  { key = "t",     mods = "ALT",         action = act.SpawnTab("CurrentPaneDomain") },
+  { key = "t",     mods = "SHIFT|ALT",   action = act.ShowTabNavigator },
+  { key = "w",     mods = "ALT",         action = act.CloseCurrentTab({ confirm = true }) },
 
-	{ key = "Enter", mods = "SHIFT|SUPER", action = act.SpawnWindow },
+  { key = "Enter", mods = "SHIFT|SUPER", action = act.SpawnWindow },
 
-	{
-		key = '"',
-		mods = "SHIFT|ALT",
-		action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
-	},
-	{
-		key = "%",
-		mods = "SHIFT|ALT",
-		action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
-	},
-	{ key = "x", mods = "ALT", action = act.CloseCurrentPane({ confirm = true }) },
-	{ key = "h", mods = "ALT", action = act.ActivatePaneDirection("Left") },
-	{ key = "h", mods = "SHIFT|ALT", action = act.AdjustPaneSize({ "Left", 1 }) },
-	{ key = "l", mods = "ALT", action = act.ActivatePaneDirection("Right") },
-	{ key = "l", mods = "SHIFT|ALT", action = act.AdjustPaneSize({ "Right", 1 }) },
-	{ key = "k", mods = "ALT", action = act.ActivatePaneDirection("Up") },
-	{ key = "k", mods = "SHIFT|ALT", action = act.AdjustPaneSize({ "Up", 1 }) },
-	{ key = "j", mods = "ALT", action = act.ActivatePaneDirection("Down") },
-	{ key = "j", mods = "SHIFT|ALT", action = act.AdjustPaneSize({ "Down", 1 }) },
-	{
-		key = "r",
-		mods = "ALT",
-		action = act.PromptInputLine({
-			description = "Enter a new name for tab",
-			action = wezterm.action_callback(function(window, _, line)
-				if line then
-					window:active_tab():set_title(line)
-				end
-			end),
-		}),
-	},
+  {
+    key = '"',
+    mods = "SHIFT|ALT",
+    action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
+  },
+  {
+    key = "%",
+    mods = "SHIFT|ALT",
+    action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+  },
+  { key = "x", mods = "ALT",       action = act.CloseCurrentPane({ confirm = true }) },
+  { key = "h", mods = "ALT",       action = act.ActivatePaneDirection("Left") },
+  { key = "h", mods = "SHIFT|ALT", action = act.AdjustPaneSize({ "Left", 1 }) },
+  { key = "l", mods = "ALT",       action = act.ActivatePaneDirection("Right") },
+  { key = "l", mods = "SHIFT|ALT", action = act.AdjustPaneSize({ "Right", 1 }) },
+  { key = "k", mods = "ALT",       action = act.ActivatePaneDirection("Up") },
+  { key = "k", mods = "SHIFT|ALT", action = act.AdjustPaneSize({ "Up", 1 }) },
+  { key = "j", mods = "ALT",       action = act.ActivatePaneDirection("Down") },
+  { key = "j", mods = "SHIFT|ALT", action = act.AdjustPaneSize({ "Down", 1 }) },
+  {
+    key = "r",
+    mods = "ALT",
+    action = act.PromptInputLine({
+      description = "Enter a new name for tab",
+      action = wezterm.action_callback(function(window, _, line)
+        if line then
+          window:active_tab():set_title(line)
+        end
+      end),
+    }),
+  },
+  -- {
+  --   key = "Enter",
+  --   mods = "CTRL",
+  --   action = act.SendKey { key = "Enter", mods = "CTRL" }
+  -- },
 }
 
 return config

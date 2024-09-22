@@ -40,7 +40,7 @@
     zathura
     nautilus
     # dolphin
-    logseq
+    # logseq
     # isabelle
     feh
     # virtualbox
@@ -50,6 +50,7 @@
     syncthing
     flameshot
     # wineWowPackages.stable
+    rofi-power-menu
 
     # Terminal
     wezterm
@@ -132,7 +133,8 @@
     source = ./nvim;
     recursive = true;
   };
-  # Doesn't work :/
+
+  # FIX: Slå korrekt notation op! (se VimJoyers video)
   # xdg.mimeApps.defaultApplications."inode/directory" = "org.gnome.Nautilus.desktop";
 
   # NOTE: If you make an init.lua in ./nvim, then below code doesn't run.
@@ -152,7 +154,7 @@
       lua-language-server
       nil
       nixfmt-rfc-style
-      fsautocomplete # TODO: Fix!
+      fsautocomplete # FIX: Virker ikke :/
       haskell-language-server
       ### To fix haskell-lsp for xmonad
       # If you want you can use `with hpkgs; [` to avoid explicitly
@@ -190,10 +192,12 @@
         vim-nix
 
         {
+          #FIX:  Fjern '' og `` (måske)
           plugin = nvim-autopairs;
           config = "require('nvim-autopairs').setup()";
         }
 
+        #FIX: neodev virker ikke i home-manger/nvim mappe.
         neodev-nvim # Archived, consider 'lazydev.nvim' instead
         {
           plugin = nvim-cmp;
@@ -261,8 +265,25 @@
           config = "require('oil').setup()";
         }
 
-        todo-comments-nvim
-
+        # plenary-nvim
+        {
+          #NOTE: Possible commands: NOTE, FIX, TOD, HACK, WARN, PERF & TEST.
+          plugin = todo-comments-nvim;
+          config = # lua
+            ''
+              require('todo-comments').setup()
+              vim.keymap.set("n", "]t", function()
+              require("todo-comments").jump_next({
+                keywords = { "TODO", "HACK", "WARN", "FIX", "PERF" }
+              })
+              end, { desc = "Next error/warning todo comment" })
+              vim.keymap.set("n", "[t", function()
+              require("todo-comments").jump_prev({
+                keywords = { "TODO", "HACK", "WARN", "FIX", "PERF"}
+              })
+              end, { desc = "Next error/warning todo comment" })
+            '';
+        }
         {
           plugin = vimtex;
           config = "vim.g.vimtex_view_method = 'zathura'";
@@ -340,12 +361,13 @@
   programs.git = {
     enable = true;
     userName = "angryluck";
-    # Idk why I need this, and don't wan't it visible in public repo
-    # userEmail = TODO;
+    # Github email, maybe better to write own email, idk
     userEmail = "54353246+angryluck@users.noreply.github.com";
     extraConfig = {
       # Set push.autoSetupRemote to true
       push.autoSetupRemote = "true";
+      init.defaultBranch = "master";
+      safe.directory = "/etc/nixos";
     };
   };
 
@@ -356,12 +378,74 @@
     extraConfig = "${builtins.readFile ./wezterm/wezterm.lua}";
   };
 
-  # THIS MIGHT NOT WORK!
-  # See https://nixos.wiki/wiki/TexLive
-  # programs.texlive = {
-  #   enable = true;
-  #   packageSet = pkgs.texlive.combined.scheme-tetex;
+  programs.rofi = {
+    # Can't set file-browser-extended options here, have to modify the command
+    # in xmonad!
+    enable = true;
+    font = "Inconsolata 20";
+    # theme = "gruvbox-dark-soft";
+    theme = "Arc-Dark";
+    # package = pkgs.rofi;
+    plugins = with pkgs; [
+      rofi-calc
+      rofi-file-browser
+      # rofimoji
+      rofi-emoji
+    ];
+    extraConfig = {
+      display-drun = "Applications";
+      modi = [
+        "drun"
+        "file-browser-extended"
+        "calc"
+        "emoji"
+      ];
+      # file-browser-matching = "fuzzy";
+      # file-browser-directory = "~/documents";
+      # file-browser-depth = 0;
+      show-icons = true;
+    };
+  };
+
+  # Doesn't work in tandem with the above
+  # xdg.configFile.rofi = {
+  #   # enable = true;
+  #   source = ./rofi;
   # };
 
-  #TODO: Fix rofi, gennemcheck intet mangler (og backup på netter), installer!
+  #FIX: Reparer polybar, og skift xmobar ud med det
+  services.polybar = {
+    enable = true;
+    #HACK: Lav ordentlig configuration
+    script = "polybar -c ~/home-manager/polybar/example example&";
+    config = {
+      "bar/top" = {
+        monitor = "\${env:MONITOR:eDP1}";
+        width = "100%";
+        height = "3%";
+        radius = 0;
+        modules-center = "date";
+      };
+
+      "module/date" = {
+        type = "internal/date";
+        internal = 5;
+        date = "%d.%m.%y";
+        time = "%H:%M";
+        label = "%time%  %date%";
+      };
+    };
+  };
 }
+
+# THIS MIGHT NOT WORK!
+# See https://nixos.wiki/wiki/TexLive
+# programs.texlive = {
+#   enable = true;
+#   packageSet = pkgs.texlive.combined.scheme-tetex;
+# };
+
+#TODO:
+# 1. Gennemcheck intet mangler
+# 2. Backup på nettet
+# 3. Installer!
