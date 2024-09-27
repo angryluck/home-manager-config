@@ -87,9 +87,11 @@
     zathura
     nautilus
     # dolphin
-    logseq
+
+    # Trying stable version
+    stablePkgs.logseq
     # Needed for logseq for some reason
-    glibc
+    # glibc
     isabelle
     feh
     # virtualbox
