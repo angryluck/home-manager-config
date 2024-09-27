@@ -1,23 +1,67 @@
 {
-  config,
+  # config,
   pkgs,
-  inputs,
+  # inputs,
   ...
 }:
 
 {
+  imports = [
+    ./nvim
+    ./zsh # Note, zsh has to be installed in configuration.nix (for now)
+    ./wezterm
+    ./polybar
+  ];
+
+  # Let home-manager manage itself, required
+  programs.home-manager.enable = true;
+
   home.username = "angryluck";
   home.homeDirectory = "/home/angryluck";
 
   # DON'T CHANGE, UNLESS YOU HAVE READ Home Manager RELEASE NOTES!
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
+  # Allows you to install fonts in home.packages
+  fonts.fontconfig = {
+    enable = true;
+    defaultFonts = {
+      emoji = [ "Noto Color Emoji" ];
+      monospace = [ "0xProto" ];
+      sansSerif = [ "Lato" ];
+      serif = [ "Noto Serif" ];
+    };
+  };
+
+  # All user-packages, systemwide packages should go in configuration.nix
   home.packages = with pkgs; [
 
-    # Browser
+    ### FONTS
+    _0xproto
+    font-awesome
+    inconsolata
+    hack-font
+    noto-fonts-color-emoji
+    # noto-fonts-extra
+    # otf-fira-mono
+    terminus_font
+    # ttf-aptos 1.0-1
+    caladea
+    noto-fonts
+    lato
+
+    (nerdfonts.override {
+      fonts = [
+        "0xProto"
+        "Inconsolata"
+        "Hack"
+      ];
+    })
+
+    ### Browser
     firefox
 
-    # cli-tools
+    ### CLI-tools
     hello
     trash-cli
     fzf
@@ -35,35 +79,49 @@
     xorg.xev
     xorg.xkill
     xorg.xprop
+    file
+    # Set in configuration.nix insted
+    # brillo
 
-    # Applications
+    ### Applications
     zathura
     nautilus
     # dolphin
-    # logseq
-    # isabelle
+    logseq
+    # Needed for logseq for some reason
+    glibc
+    isabelle
     feh
     # virtualbox
 
-    # Utilities
+    ### Utilities
     redshift
-    syncthing
+    # syncthing
     flameshot
     # wineWowPackages.stable
     rofi-power-menu
 
     # Terminal
-    wezterm
+    # wezterm
 
-    # Programming languages
+    ### Programming languages
     gcc14
+    gnumake
+    valgrind
     gdb
-    # fsharp
+    rars
+    fsharp
+    dotnet-sdk
     # ghc
-    # python
+    python3
     # rust
     # go
     # kotlin
+
+    # DIVERSE
+    # mpc-cli
+    #FIX: Configure this with 'programs.texlive.enable' instead
+    texlive.combined.scheme-full
 
     # Fonts:
     # noto-fonts-emoji
@@ -114,7 +172,6 @@
     # pamixer
     # pandoc
     # pdftk
-    # polybar (enable below)
     # ranger
     # rofimoji
     # sbctl (secureboot key manager)
@@ -123,240 +180,10 @@
     # ueberzugpp
     # wirelesstools
     # xdotool
-
   ];
-
-  programs.home-manager.enable = true; # NEEDED
-
-  xdg.configFile.nvim = {
-    # enable = true;
-    source = ./nvim;
-    recursive = true;
-  };
 
   # FIX: Slå korrekt notation op! (se VimJoyers video)
   # xdg.mimeApps.defaultApplications."inode/directory" = "org.gnome.Nautilus.desktop";
-
-  # NOTE: If you make an init.lua in ./nvim, then below code doesn't run.
-  # But the above lets us have an after/ftplugin/ folder!!!
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    vimAlias = true;
-    extraLuaConfig = ''
-      ${builtins.readFile ./nvim/options.lua}
-      ${builtins.readFile ./nvim/commands.lua}
-      ${builtins.readFile ./nvim/keymaps.lua}
-    '';
-
-    extraPackages = with pkgs; [
-      # LSPs
-      lua-language-server
-      nil
-      nixfmt-rfc-style
-      fsautocomplete # FIX: Virker ikke :/
-      haskell-language-server
-      ### To fix haskell-lsp for xmonad
-      # If you want you can use `with hpkgs; [` to avoid explicitly
-      # selecting into the hpkgs set on every line
-      (haskellPackages.ghcWithPackages (
-        hpkgs: with hpkgs; [
-          xmobar
-          xmonad
-          xmonad-contrib
-        ]
-      ))
-
-      tree-sitter
-    ];
-    # Use 'map' to set default 'type' for plugins
-    plugins =
-      with pkgs.vimPlugins;
-      map (plugin: plugin // { type = plugin.type or "lua"; }) [
-        # NOTE: 'opts' options in lazy.nvim config corresponds to passing
-        # the options to '<Plugin>.config()' function.
-        {
-          plugin = nvim-surround;
-          config = # lua
-            ''
-              require('nvim-surround').setup({
-                keymaps = { visual = false, },
-              })
-            '';
-        }
-        {
-          plugin = catppuccin-nvim;
-          config = "vim.cmd.colorscheme 'catppuccin'";
-        }
-
-        vim-nix
-
-        {
-          #FIX:  Fjern '' og `` (måske)
-          plugin = nvim-autopairs;
-          config = "require('nvim-autopairs').setup()";
-        }
-
-        #FIX: neodev virker ikke i home-manger/nvim mappe.
-        neodev-nvim # Archived, consider 'lazydev.nvim' instead
-        {
-          plugin = nvim-cmp;
-        }
-        cmp-nvim-lsp
-        {
-          plugin = nvim-lspconfig;
-          config = "${builtins.readFile ./nvim/plugins/lsp.lua}";
-
-        }
-
-        # Virker ikke med nvim-hmts :/
-        nvim-treesitter-textobjects
-        # nvim-treesitter-context # This one sucks :/
-        nvim-treesitter-refactor
-        {
-          # plugin = nvim-treesitter.withAllGrammars;
-          plugin = (
-            nvim-treesitter.withPlugins (p: [
-              p.tree-sitter-nix
-              p.tree-sitter-vim
-              p.tree-sitter-lua
-              p.tree-sitter-bash
-              p.tree-sitter-c
-              p.tree-sitter-rasi # rofi syntax, maybe not needed
-            ])
-          );
-          config = "${builtins.readFile ./nvim/plugins/treesitter.lua}";
-        }
-        # {
-        #   plugin = (
-        #     nvim-treesitter.withPlugins (p: [
-        #       p.tree-sitter-nix
-        #       p.tree-sitter-vim
-        #       p.tree-sitter-lua
-        #       p.tree-sitter-bash
-        #       p.tree-sitter-c
-        #       p.tree-sitter-rasi # rofi syntax, maybe not needed
-        #     ])
-        #   );
-        # }
-
-        vim-repeat
-
-        {
-          plugin = leap-nvim;
-          config = # lua
-            ''
-              require('leap').create_default_mappings()
-              require('leap.user').set_repeat_keys('<enter>', '<backspace>')
-              vim.keymap.set('n',        's', '<Plug>(leap)')
-              vim.keymap.set('n',        'S', '<Plug>(leap-from-window)')
-              vim.keymap.set({'x', 'o'}, 's', '<Plug>(leap-forward)')
-              vim.keymap.set({'x', 'o'}, 'S', '<Plug>(leap-backward)')
-            '';
-        }
-
-        # {
-        #   plugin = flash-nvim;
-        #   config = "${builtins.readFile ./nvim/plugins/flash.lua}";
-        # }
-
-        {
-          plugin = oil-nvim;
-          config = "require('oil').setup()";
-        }
-
-        # plenary-nvim
-        {
-          #NOTE: Possible commands: NOTE, FIX, TOD, HACK, WARN, PERF & TEST.
-          plugin = todo-comments-nvim;
-          config = # lua
-            ''
-              require('todo-comments').setup()
-              vim.keymap.set("n", "]t", function()
-              require("todo-comments").jump_next({
-                keywords = { "TODO", "HACK", "WARN", "FIX", "PERF" }
-              })
-              end, { desc = "Next error/warning todo comment" })
-              vim.keymap.set("n", "[t", function()
-              require("todo-comments").jump_prev({
-                keywords = { "TODO", "HACK", "WARN", "FIX", "PERF"}
-              })
-              end, { desc = "Next error/warning todo comment" })
-            '';
-        }
-        {
-          plugin = vimtex;
-          config = "vim.g.vimtex_view_method = 'zathura'";
-        }
-
-        hmts-nvim
-
-        # Måske senere, når behovet rammer:
-        # telekasten-nvim
-        # markdown-preview-nvim
-        # harpoon
-        # neorg
-        # sideways (lav med treesitter i stedet)
-        # vim-orgmode (logseq i stedet)
-
-        # Behøves ikk:
-        # conform
-        # colorscheme
-
-        # Mangler (ik på nixpkgs)
-        # scrollEOF
-
-        ### Resterende, fra nvim/lua/angryluck/plugins:
-        #
-        ### completion.lua
-        # nvim-cmp
-        # luasnip
-        #
-        ### git.lua
-        # vim-fugitive
-        # vim-rhubarb
-        # gitsigns-nvim
-        #
-        haskell-tools-nvim
-        #
-        # isabelle-lsp.lua (skal stadig have det til at virke)
-        #
-        ### telescope-nvim
-        ## herunder:
-        # plenary-nvim
-        # telescope-fzf-native-nvim
-        # telescope-ui-select-nvim
-        # nvim-web-devicons
-        # telescope-emoji-nvim (mangler fra nixpkgs)
-        #
-        # vim-template
-        # 
-        # which-key-nvim (mangler fra nixpkgs)
-
-      ];
-  };
-
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-    shellAliases = {
-      ls = "ls --color --group-directories-first -F";
-      cp = "cp -i"; # Interactive
-      df = "df -h";
-      free = "free -m";
-      bc = "bc -l";
-    };
-    # autocd = true;
-    dotDir = ".config/zsh";
-    initExtra = "${builtins.readFile ./zsh/.zshrc}";
-  };
-
-  programs.zoxide = {
-    enable = true;
-    options = [ "--cmd j" ];
-  };
 
   programs.git = {
     enable = true;
@@ -371,18 +198,15 @@
     };
   };
 
+  # File browser
   programs.yazi.enable = true;
-
-  programs.wezterm = {
-    enable = true;
-    extraConfig = "${builtins.readFile ./wezterm/wezterm.lua}";
-  };
 
   programs.rofi = {
     # Can't set file-browser-extended options here, have to modify the command
     # in xmonad!
     enable = true;
-    font = "Inconsolata 20";
+    terminal = "${pkgs.wezterm}/bin/wezterm";
+    font = "Lato 20";
     # theme = "gruvbox-dark-soft";
     theme = "Arc-Dark";
     # package = pkgs.rofi;
@@ -413,39 +237,19 @@
   #   source = ./rofi;
   # };
 
-  #FIX: Reparer polybar, og skift xmobar ud med det
-  services.polybar = {
-    enable = true;
-    #HACK: Lav ordentlig configuration
-    script = "polybar -c ~/home-manager/polybar/example example&";
-    config = {
-      "bar/top" = {
-        monitor = "\${env:MONITOR:eDP1}";
-        width = "100%";
-        height = "3%";
-        radius = 0;
-        modules-center = "date";
-      };
+  services.syncthing.enable = true;
 
-      "module/date" = {
-        type = "internal/date";
-        internal = 5;
-        date = "%d.%m.%y";
-        time = "%H:%M";
-        label = "%time%  %date%";
-      };
-    };
-  };
+  # THIS MIGHT NOT WORK!
+  # See https://nixos.wiki/wiki/TexLive
+  # programs.texlive = {
+  #   enable = true;
+  #   # packageSet = pkgs.texlive.combined.scheme-medium;
+  #   packageSet = pkgs.texlive.combined {
+  #     inherit (pkgs.texlive) scheme-medium; # Choose LaTeX scheme
+  #   };
+  # };
+  # programs.texlive = {
+  #   enable = true;
+  #   packageSet = pkgs.texlive.combined.scheme-tetex;
+  # };
 }
-
-# THIS MIGHT NOT WORK!
-# See https://nixos.wiki/wiki/TexLive
-# programs.texlive = {
-#   enable = true;
-#   packageSet = pkgs.texlive.combined.scheme-tetex;
-# };
-
-#TODO:
-# 1. Gennemcheck intet mangler
-# 2. Backup på nettet
-# 3. Installer!

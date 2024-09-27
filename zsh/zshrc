@@ -64,6 +64,7 @@ PROMPT='%F{green}[%F{white}%B%3~%b%F{green}]%(!.#.$) %f'
 # Plugin-config
 bindkey '^ ' autosuggest-accept
 # bindkey '^[[15;4u' autosuggest-execute #Maps to CTRL+Enter, see alacritty
+bindkey '^[[13;5u' autosuggest-execute #Maps to CTRL+Enter, see alacritty
 # This one just maps enter to it, but no CTRL...
 # bindkey '^[M' autosuggest-execute #Maps to CTRL+Enter, see alacritty
 # bindkey '^M' autosuggest-execute #Maps to CTRL+Enter, see alacritty

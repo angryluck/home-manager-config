@@ -16,6 +16,8 @@ config.font = wezterm.font_with_fallback({
 --     { family = "0xProto", weight = "Bold" },
 --     "Inconsolata" }
 -- 45678901234567890123456789012345678901234567890123456789012345678901234567890
+-- TODO: Make font size larger, but make new layout in Xmonad to work with
+-- higher font-size
 config.font_size = 12.0
 -- config.cell_width = 0.9
 
@@ -81,11 +83,11 @@ config.keys = {
       end),
     }),
   },
-  -- {
-  --   key = "Enter",
-  --   mods = "CTRL",
-  --   action = act.SendKey { key = "Enter", mods = "CTRL" }
-  -- },
+  {
+    key = "Enter",
+    mods = "CTRL",
+    action = act.SendString("\x1b[13;5u")
+  },
 }
 
 return config

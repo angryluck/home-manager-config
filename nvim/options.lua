@@ -24,6 +24,7 @@ vim.opt.clipboard = "unnamedplus"
 
 -- Visual wrap keeps indentation
 vim.opt.breakindent = true
+vim.opt.textwidth = 80
 
 vim.opt.undofile = true
 
