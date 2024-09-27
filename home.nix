@@ -2,6 +2,7 @@
   # config,
   pkgs,
   # inputs,
+  # stablePkgs,
   ...
 }:
 
@@ -89,7 +90,9 @@
     # dolphin
 
     # Trying stable version
-    stablePkgs.logseq
+    # Didn't work...
+    # stablePkgs.logseq
+    logseq
     # Needed for logseq for some reason
     # glibc
     isabelle
