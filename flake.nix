@@ -14,7 +14,7 @@
   outputs =
     {
       nixpkgs,
-      nixpkgs-stable,
+      # nixpkgs-stable,
       home-manager,
       ...
     }:
