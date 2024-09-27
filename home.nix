@@ -34,6 +34,21 @@
     };
   };
 
+  # HACK: Upstream Logseq package was htrowing errors, so had to downgrade
+  # electron-version. Make sure to check
+  # https://github.com/logseq/logseq/issues/10851, so that when it's fixed you
+  # can delete this (electron 27 is marked as insecure).
+  nixpkgs.overlays = [
+    (final: prev: {
+      logseq = prev.logseq.override {
+        electron = prev.electron_27;
+      };
+    })
+  ];
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-27.3.11"
+  ];
+
   # All user-packages, systemwide packages should go in configuration.nix
   home.packages = with pkgs; [
 
