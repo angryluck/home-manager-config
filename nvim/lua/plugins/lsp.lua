@@ -91,3 +91,25 @@ require('lspconfig').nil_ls.setup {
 -- require("lspconfig").fsautocomplete.setup {}
 
 require('lspconfig').ccls.setup {}
+
+require("lspconfig").pylsp.setup {
+  settings = {
+    pylsp = {
+      plugins = {
+        yapf = {
+          enabled = true,
+        },
+      },
+    },
+  },
+}
+
+-- require('lspconfig').pyright.setup {
+--   settings = {
+--     ['pyright'] = {
+--       formatting = {
+--         command = { "black ." }
+--       }
+--     }
+--   }
+-- }

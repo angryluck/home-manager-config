@@ -72,3 +72,5 @@ bindkey '^[[13;5u' autosuggest-execute #Maps to CTRL+Enter, see alacritty
 # See https://stackoverflow.com/questions/16359878/how-to-map-shift-enter
 bindkey '^N' autosuggest-clear
 
+
+eval "$(direnv hook zsh)"

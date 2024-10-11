@@ -1,11 +1,13 @@
-{ ... }:
+{ pkgs, ... }:
 {
   #FIX: Reparer polybar, og skift xmobar ud med det.
   #Enten konfigurer i xmonad.hs, ellers få nedenstående til at virke...
   services.polybar = {
     enable = true;
-    script = "polybar -c ~/.config/home-manager/polybar/reedrw base&";
+    # For testing: run polybar -c ~/.config/home-manager/polybar/config.ini example&
+    script = "polybar default&";
     config = ./config.ini;
+    package = pkgs.polybarFull;
     # config = {
     #   "bar/top" = {
     #     monitor = "\${env:MONITOR:eDP1}";

@@ -24,9 +24,13 @@ local function as(trigger, nodes, opts)
 end
 
 return {
-  as(
-    "eq",
-    fmta(
+  as("eq", fmta([[
+  \[
+    <>
+  \]
+]], { i(1) }), { condition = line_begin }),
+
+  as("\\[", fmta(
       [[
         \[
           <>
@@ -37,31 +41,17 @@ return {
     { condition = line_begin }
   ),
 
-  as(
-    "\\[",
-    fmta(
-      [[
-        \[
-          <>
-        \]
-      ]],
-      { i(1) }
-    ),
-    { condition = line_begin }
-  ),
+  as("begin", fmta([[
+\begin{<>}
+  <>
+\end{<>}
+]], { i(1), i(2), rep(1) }), { condition = line_begin }),
 
-  as(
-    "beg",
-    fmta(
-      [[
+  as("bg", fmta([[
         \begin{<>}
           <>
         \end{<>}
-      ]],
-      { i(1), i(2), rep(1) }
-    ),
-    { condition = line_begin }
-  ),
+      ]], { i(1), i(2), rep(1) }), { condition = line_begin }),
 
   as(
     "als",
@@ -91,7 +81,7 @@ return {
 
 
   as(
-    "enum",
+    "enumm",
     fmta(
       [[
   \begin{enumerate}
@@ -103,7 +93,22 @@ return {
     { condition = line_begin }
   ),
 
+
+  as(
+    "itemm",
+    fmta(
+      [[
+  \begin{itemize}
+    \item <>
+  \end{itemize}
+  ]],
+      { i(1) }
+    ),
+    { condition = line_begin }
+  ),
+
   as(",i", { t("\\item") }, { condition = line_begin }),
+
 
   -- Primært til programmering (MLA)
   as(
@@ -111,7 +116,7 @@ return {
     fmta(
       [[
   \begin{lstlisting}
-    <>
+  <>
   \end{lstlisting}
   ]],
       { i(1) }
@@ -121,8 +126,19 @@ return {
 
 
 
+  s("fig", fmta([[
+\begin{figure}[hb]
+  \centering
+  \includegraphics[width=0.9\textwidth]{<>}
+  \caption{<>}
+\end{figure}
+  ]], { i(1, "file_path"), i(2, "caption") }), { condition = line_begin }),
+
+
+
   -- Sections:
   as("sec", fmta("\\section{<>} %", { i(1) }), { condition = line_begin }),
   as("sub", fmta("\\subsection{<>} %", { i(1) }), { condition = line_begin }),
   as("ssub", fmta("\\subsubsection{<>} %", { i(1) }), { condition = line_begin }),
+  as("coo", fmta("\\code{<>}", { i(1) }))
 }

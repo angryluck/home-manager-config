@@ -28,10 +28,10 @@
       nil
       nixfmt-rfc-style
       fsautocomplete # FIX: Virker ikke :/
+
+      # Haskell
       haskell-language-server
       ### To fix haskell-lsp for xmonad
-      # If you want you can use `with hpkgs; [` to avoid explicitly
-      # selecting into the hpkgs set on every line
       (haskellPackages.ghcWithPackages (
         hpkgs: with hpkgs; [
           # xmobar
@@ -39,11 +39,58 @@
           xmonad-contrib
         ]
       ))
+
       ccls
+      # Python formatter
+
+      #       python312Packages.python-lsp-server
+      # python312Packages.rope
+      # python312Packages
+      # python312Packages
+      # python312Packages
+      # python312Packages
+      # python312Packages
+      # python312Packages
+
+      # (python3.withPackages (
+      (python312.withPackages (
+        python-pkgs: with python-pkgs; [
+          # select Python packages here
+          # pandas
+          # requests
+          torch
+          torchvision
+          numpy
+          scikit-learn
+          matplotlib
+          # sklearn-deap
+
+          ### LSP-stuff:
+          python-lsp-server
+          rope
+          pyflakes
+          mccabe
+          pycodestyle
+          # pydocstyle
+          yapf
+          flake8
+          pylint
+        ]
+      ))
+      # black
+      # pyright
 
       tree-sitter
+      ### FOR GITHUB PLUGIN BELOW!
+      # nodejs
     ];
     # Use 'map' to set default 'type' for plugins
+    # NOTE: Options for each plugin (see https://github.com/nix-community/home-manager/blob/release-24.05/modules/programs/neovim.nix):
+    # config (string): Configuration for plugin
+    # type ("lua", "viml", "teal" or "fennel"): . Configuration language for cconfigure
+    # optional (bool): Whether to load plugin automatically, otherwise use ":packadd"
+    # plugin (string): Name of plugin, automatically passed when writing a string rather than a table
+    # runtime (table): Files linked in nvim config folder, can be used with ftplugin
     plugins =
       with pkgs.vimPlugins;
       map (plugin: plugin // { type = plugin.type or "lua"; }) [
@@ -60,7 +107,8 @@
         }
         {
           plugin = catppuccin-nvim;
-          config = "vim.cmd.colorscheme 'catppuccin'";
+          # Same as 'catppuccin'
+          config = "vim.cmd.colorscheme 'catppuccin-mocha'";
         }
 
         vim-nix
@@ -77,11 +125,8 @@
         #FIX: neodev virker ikke i home-manger/nvim mappe.
         neodev-nvim # Archived, consider 'lazydev.nvim' instead
 
-        {
-          plugin = luasnip;
-          config = "require('luasnip.loaders.from_lua').lazy_load()";
-        }
-
+        # Snippets and autocomplete
+        luasnip
         cmp_luasnip
         cmp-path
         {
@@ -99,6 +144,7 @@
         # Virker ikke med nvim-hmts :/
         nvim-treesitter-textobjects
         # nvim-treesitter-context # This one sucks :/
+        # OR DOES IT?
         nvim-treesitter-refactor
         {
           # plugin = nvim-treesitter.withAllGrammars;
@@ -110,6 +156,8 @@
               p.tree-sitter-bash
               p.tree-sitter-c
               p.tree-sitter-rasi # rofi syntax, maybe not needed
+              p.tree-sitter-haskell
+              p.tree-sitter-python
             ])
           );
           config = "${builtins.readFile ./lua/plugins/treesitter.lua}";
@@ -192,7 +240,21 @@
         #
         haskell-tools-nvim
         Ionide-vim
-        # zarchive-vim-fsharp
+        markdown-preview-nvim
+
+        # code formatter:
+        {
+          plugin = conform-nvim;
+          config = "${builtins.readFile ./lua/plugins/conform.lua}";
+        }
+
+        ### NEED TO ADD STUDENT MAIL TO GITHUB FIRST!
+        # {
+        #   plugin = copilot-lua;
+        #   config = "require('copilot').setup({})";
+        # }
+        # CopilotChat-nvim
+        # # zarchive-vim-fsharp
         #
         # isabelle-lsp.lua (skal stadig have det til at virke)
         #
@@ -208,6 +270,15 @@
         # 
         # which-key-nvim (mangler fra nixpkgs)
 
+        {
+          plugin = nvim-colorizer-lua;
+          config = # lua
+            ''
+              require('colorizer').setup({
+                user_default_options = { names = false }
+              })
+            '';
+        }
       ];
   };
 

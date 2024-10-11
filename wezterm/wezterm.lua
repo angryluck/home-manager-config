@@ -5,6 +5,9 @@ local act = wezterm.action
 config.color_scheme = "Catppuccin Mocha"
 config.font = wezterm.font_with_fallback({
   "0xProto",
+  "Symbols Nerd Font Mono",
+  { family = "Font Awesome 6 Free", weight = "Black" },
+  { family = "Font Awesome 6 Free", weight = "Regular" },
   -- "Noto Color Emoji",
   -- "DejaVu Sans Mono",
   -- "Symbols Nerd Font",

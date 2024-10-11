@@ -4,13 +4,19 @@ local luasnip = require("luasnip")
 vim.keymap.set(
   "n",
   "<Leader>L",
-  "<Cmd>lua require('luasnip.loaders.from_lua').load({paths = '~/.config/nvim/luasnippets/'})<CR>"
+  -- "<Cmd>lua require('luasnip.loaders.from_lua').load({paths = '~/.config/nvim/luasnippets/'})<CR>"
+  -- To quickly reload snippets, without having to run home-manager switch.
+  -- But do remember to run home-manager switch at end of session!
+  "<Cmd>lua require('luasnip.loaders.from_lua').load({paths = '~/.config/home-manager/nvim/luasnippets/'})<CR>"
 )
 luasnip.config.setup({
   enable_autosnippets = true,
   store_selection_keys = "<Tab>",
   update_events = "TextChanged,TextChangedI",
 })
+
+-- HACK: Do this in terms of 'luasnip' variable instead?
+require('luasnip.loaders.from_lua').lazy_load()
 
 cmp.setup({
   snippet = {
