@@ -5,9 +5,7 @@
   # inputs,
   # stablePkgs,
   ...
-}:
-
-{
+}: {
   imports = [
     ./nvim
     ./zsh # Note, zsh has to be installed in configuration.nix (for now)
@@ -35,10 +33,11 @@
   home.activation = {
     # NOTE: Only idempotent actions (runs on each home-manager switch)
     myActivationScript =
-      lib.hm.dag.entryAfter [ "writeBoundary" ] # sh
-        ''
-          ${pkgs.systemd}/bin/systemctl --user restart polybar
-        '';
+      lib.hm.dag.entryAfter ["writeBoundary"] # sh
+      
+      ''
+        ${pkgs.systemd}/bin/systemctl --user restart polybar
+      '';
   };
 
   # home.pointerCursor.name = "Vanilla-DMZ";
@@ -156,6 +155,14 @@
     ## LIST OF about:config changes:
     # mousewheel.default.delta.multiplyer_y: 100->50
   };
+
+  programs.thunderbird = {
+    enable = true;
+    profiles."angryluck" = {
+      isDefault = true;
+    };
+  };
+
   programs.zathura = {
     enable = true;
     options = {
@@ -186,6 +193,11 @@
         # these are required!
         experimental-backends = true;
         # backend = "glx";
+        blur = {
+          method = "gaussian";
+          size = 10;
+          deviation = 5.0;
+        };
       };
     };
   };
@@ -266,9 +278,9 @@
         "Noto Color Emoji"
         "NerdFontSymbolsOnly"
       ];
-      monospace = [ "0xProto" ];
-      sansSerif = [ "Lato" ];
-      serif = [ "Noto Serif" ];
+      monospace = ["0xProto"];
+      sansSerif = ["Lato"];
+      serif = ["Noto Serif"];
     };
   };
 
@@ -283,13 +295,13 @@
       };
     })
   ];
+
   nixpkgs.config.permittedInsecurePackages = [
     "electron-27.3.11"
   ];
 
   # All user-packages, systemwide packages should go in configuration.nix
   home.packages = with pkgs; [
-
     bitwarden-desktop
     ### FONTS
     _0xproto
@@ -379,18 +391,19 @@
     # ghc
 
     (python3.withPackages (
-      python-pkgs: with python-pkgs; [
-        # select Python packages here
-        # pandas
-        # requests
-        torch
-        torchvision
-        numpy
-        scikit-learn
-        matplotlib
-        notebook
-        # sklearn-deap
-      ]
+      python-pkgs:
+        with python-pkgs; [
+          # select Python packages here
+          # pandas
+          # requests
+          torch
+          torchvision
+          numpy
+          scikit-learn
+          matplotlib
+          notebook
+          # sklearn-deap
+        ]
     ))
     # rust
     # go
@@ -463,9 +476,10 @@
     xdotool
     ripgrep
     # libreoffice-still
-
-    # Temporary!
-    # wireplumber
   ];
-
 }
+/*
+ TODO:Overall things to fix
+- Sync flakes for configuration.nix and home.nix
+*/
+

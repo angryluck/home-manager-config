@@ -82,7 +82,9 @@ require('lspconfig').nil_ls.setup {
   settings = {
     ['nil'] = {
       formatting = {
-        command = { "nixfmt" },
+        -- Readd when https://github.com/neovim/neovim/pull/29601 is merged!
+        -- command = { "nixfmt" },
+        command = { "alejandra" },
       },
     },
   },
@@ -103,6 +105,13 @@ require("lspconfig").pylsp.setup {
     },
   },
 }
+
+require("lspconfig").hls.setup({
+  -- filetypes = { 'haskell', 'lhaskell', 'cabal' },
+  haskell = {
+    formattingProvider = "fourmolu",
+  },
+})
 
 -- require('lspconfig').pyright.setup {
 --   settings = {

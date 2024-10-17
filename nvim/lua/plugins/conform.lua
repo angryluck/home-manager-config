@@ -14,7 +14,7 @@ require("conform").setup({
   end,
   formatters_by_ft = {
     -- lua = { "stylua" },
-    -- haskell = { "fourmolu" },
+    haskell = { "fourmolu" },
     -- haskell = { "ormolu" },
     -- json = { "jq" },
     -- c = { "clang-format" },
