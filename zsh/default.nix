@@ -9,7 +9,7 @@
 
     eza = {
       enable = true;
-      icons = true;
+      icons = "auto";
       git = true;
     };
 
@@ -19,7 +19,8 @@
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       shellAliases = {
-        ls = "ls --color --group-directories-first -F";
+        # ls = "ls --color --group-directories-first -F";
+        ls = "eza";
         cp = "cp -i"; # Interactive
         df = "df -h";
         free = "free -m";
