@@ -21,6 +21,7 @@
       shellAliases = {
         # ls = "ls --color --group-directories-first -F";
         ls = "eza";
+        l = "eza -l --total-size --no-permissions --no-user -h";
         cp = "cp -i"; # Interactive
         df = "df -h";
         free = "free -m";
