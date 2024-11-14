@@ -41,6 +41,14 @@ return {
     { condition = line_begin }
   ),
 
+
+  s("\\", fmta([[
+\[
+  <>
+\]
+  ]], { i(1) }), { condition = line_begin }),
+
+
   as("begin", fmta([[
 \begin{<>}
   <>

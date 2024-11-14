@@ -249,7 +249,8 @@ myStartupHook :: X ()
 myStartupHook = do
   -- spawn "systemctl --user restart polybar"
   -- spawnOnce "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle &"
-  spawnOnce ""
+  -- Should be done in a better way...
+  spawnOnce "feh --bg-fill .background-image"
 
 myManageHook =
   composeAll

@@ -3,8 +3,10 @@
 
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    # nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+    shared.url = "path:/etc/nix-config";
+    nixpkgs.follows = "shared/nixpkgs";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -15,12 +17,12 @@
 
   outputs = {
     nixpkgs,
-    # nixpkgs-stable,
+    nixpkgs-stable,
     home-manager,
     ...
   } @ inputs: let
     system = "x86_64-linux";
-    # stablePkgs = nixpkgs-stable.legacyPackages.${system};
+    stablePkgs = nixpkgs-stable.legacyPackages.${system};
     pkgs = nixpkgs.legacyPackages.${system};
   in {
     homeConfigurations."angryluck" = home-manager.lib.homeManagerConfiguration {
@@ -30,7 +32,10 @@
       #   inherit stablePkgs;
       # };
 
-      extraSpecialArgs = {inherit inputs;};
+      extraSpecialArgs = {
+        inherit inputs;
+        inherit stablePkgs;
+      };
 
       # Specify your home configuration modules here, for example,
       # the path to your home.nix.

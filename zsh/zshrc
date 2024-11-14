@@ -61,6 +61,9 @@ bindkey -v '^?' backward-delete-char
 # PROMPT!
 PROMPT='%F{green}[%F{white}%B%3~%b%F{green}]%(!.#.$) %f'
 
+# Better 'time' command
+TIMEFMT=$'\n================\nuser\t%*Us\nsystem\t%*Ss\ntotal\t%*Es'
+
 # Plugin-config
 bindkey '^ ' autosuggest-accept
 # bindkey '^[[15;4u' autosuggest-execute #Maps to CTRL+Enter, see alacritty

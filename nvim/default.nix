@@ -44,8 +44,8 @@
       nil
       # HACK: Only until https://github.com/neovim/neovim/pull/29601
       # is merged
-      alejandra
-      # nixfmt-rfc-style
+      # alejandra
+      nixfmt-rfc-style
       fsautocomplete # FIX: Virker ikke :/
 
       # For copilot
@@ -101,6 +101,9 @@
       tree-sitter
       ### FOR GITHUB PLUGIN BELOW! nodejs
       nodejs
+
+      ### Til fsharp
+      # mono
     ];
     # NOTE: Options for each plugin (see
     # https://github.com/nix-community/home-manager/blob/release-24.05/modules/programs/neovim.nix):
@@ -118,9 +121,7 @@
         {
           plugin = nvim-surround;
           config =
-            /*
-            lua
-            */
+            # lua
             ''
               require('nvim-surround').setup({ keymaps = { visual = false, }, })
             '';
@@ -135,18 +136,36 @@
         vim-nix
 
         {
-          #FIX:  Fjern '' og `` (måske)
-          plugin = nvim-autopairs;
+          plugin = autoclose-nvim;
           config =
-            /*
-            lua
-            */
+            #lua
             ''
-              require('nvim-autopairs').setup({
-                disable_filetype = {'tex'}
+              require('autoclose').setup({
+                keys = {
+                  ["'"] = { disabled_filetypes = { "nix" } }
+                },
+                options = {
+                  disabled_filetypes = { "tex" },
+                },
               })
             '';
+          #config = /* lua */ ''
+          #''
         }
+
+        # {
+        #   #FIX:  Fjern '' og `` (måske)
+        #
+        #   plugin = nvim-autopairs;
+        #     /*
+        #     lua
+        #     */
+        #     ''
+        #       require('nvim-autopairs').setup({
+        #         disable_filetype = {'tex'}
+        #       })
+        #     '';
+        # }
 
         #FIX: neodev virker ikke i home-manger/nvim mappe.
         neodev-nvim # Archived, consider 'lazydev.nvim' instead
@@ -191,6 +210,8 @@
           config = "${builtins.readFile ./lua/plugins/treesitter.lua}";
         }
 
+        kmonad-vim # syntax-highlighting for .kbd files
+
         vim-repeat
 
         {
@@ -217,9 +238,7 @@
         {
           plugin = oil-nvim;
           config =
-            /*
-            lua
-            */
+            # lua
             "require('oil').setup()";
         }
 
@@ -290,13 +309,29 @@
           config = "${builtins.readFile ./lua/plugins/conform.lua}";
         }
 
-        zarchive-vim-fsharp
+        #zarchive-vim-fsharp
         ### NEED TO ADD STUDENT MAIL TO GITHUB FIRST!
         {
           plugin = CopilotChat-nvim;
-          config = "require('CopilotChat').setup({
-            debug = true,
-          })";
+          config =
+            # lua
+            ''
+              local chat = require('CopilotChat')
+              chat.setup({
+                -- debug = true,
+                window = {
+                  layout = 'float',
+                  relative = 'editor',
+                  border = 'rounded',
+                },
+              })
+              vim.keymap.set('n', '<leader>co', chat.open, {silent = true})
+              -- with argument:
+              -- vim.keymap.set('n', '<leader>co', function() chat.open('your_argument') end)
+              -- or
+              -- vim.api.nvim_set_keymap('n', '<leader>co', ':lua chat.open('argument')<CR>)
+
+            '';
         }
         {
           plugin = copilot-lua;

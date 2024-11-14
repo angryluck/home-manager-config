@@ -82,9 +82,9 @@ require('lspconfig').nil_ls.setup {
   settings = {
     ['nil'] = {
       formatting = {
-        -- Readd when https://github.com/neovim/neovim/pull/29601 is merged!
-        -- command = { "nixfmt" },
-        command = { "alejandra" },
+        -- Re-add when https://github.com/neovim/neovim/pull/29601 is merged!
+        command = { "nixfmt" },
+        -- command = { "alejandra" },
       },
     },
   },

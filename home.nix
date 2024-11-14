@@ -3,9 +3,10 @@
   pkgs,
   lib,
   # inputs,
-  # stablePkgs,
+  stablePkgs,
   ...
-}: {
+}:
+{
   imports = [
     ./nvim
     ./zsh # Note, zsh has to be installed in configuration.nix (for now)
@@ -33,11 +34,11 @@
   home.activation = {
     # NOTE: Only idempotent actions (runs on each home-manager switch)
     myActivationScript =
-      lib.hm.dag.entryAfter ["writeBoundary"] # sh
-      
-      ''
-        ${pkgs.systemd}/bin/systemctl --user restart polybar
-      '';
+      lib.hm.dag.entryAfter [ "writeBoundary" ] # sh
+
+        ''
+          ${pkgs.systemd}/bin/systemctl --user restart polybar
+        '';
   };
 
   # home.pointerCursor.name = "Vanilla-DMZ";
@@ -167,8 +168,62 @@
     enable = true;
     options = {
       selection-clipboard = "clipboard";
-      syncted = true;
+      synctex = true;
       # database = "sqlite";
+    };
+  };
+
+  programs.feh = {
+    enable = true;
+
+    keybindings = {
+      menu_parent = "Left";
+      menu_child = "Right";
+      menu_down = "Down";
+      menu_up = "Up";
+
+      scroll_left = "h";
+      scroll_right = "l";
+      scroll_up = "k";
+      scroll_down = "j";
+
+      scroll_left_page = "C-h";
+      scroll_right_page = "C-l";
+      scroll_up_page = "C-k";
+      scroll_down_page = "C-j";
+
+      toggle_aliasing = "A";
+      toggle_filenames = "d";
+      toggle_pointer = "o";
+      toggle_fullscreen = "f";
+
+      zoom_in = "plus";
+      zoom_out = "minus";
+
+      next_img = [
+        "greater"
+        "C-n"
+      ];
+      prev_img = [
+        "less"
+        "C-p"
+      ];
+      reload_image = "r";
+      size_to_image = "w";
+      next_dir = "bracketright";
+      prev_dir = "bracketleft";
+      orient_3 = "parenright";
+      orient_1 = "parenleft";
+      flip = "underscore";
+      mirror = "bar";
+      remove = "Delete";
+      zoom_fit = "s";
+      zoom_default = "a";
+
+      close = [
+        "q"
+        "Q"
+      ];
     };
   };
 
@@ -278,9 +333,9 @@
         "Noto Color Emoji"
         "NerdFontSymbolsOnly"
       ];
-      monospace = ["0xProto"];
-      sansSerif = ["Lato"];
-      serif = ["Noto Serif"];
+      monospace = [ "0xProto" ];
+      sansSerif = [ "Lato" ];
+      serif = [ "Noto Serif" ];
     };
   };
 
@@ -300,9 +355,25 @@
     "electron-27.3.11"
   ];
 
+  # Unfree packages, to allow
+  nixpkgs.config.allowUnfree = true;
+  # Didn't work :/
+  # nixpkgs.config.allowUnfreePredicate = pkg:
+  #   builtins.elem (pkgs.lib.getName pkgs) [
+  #     "discord"
+  #   ];
+
   # All user-packages, systemwide packages should go in configuration.nix
   home.packages = with pkgs; [
-    bitwarden-desktop
+    discord
+    # bitwarden-desktop # FIX: Some build dependency problem, check up on it
+
+    # v1
+    stablePkgs.bitwarden-desktop
+
+    # v2
+    # inputs.nixpkgs-stable.legacyPackages."x86_64-linux". # Not the best...
+
     ### FONTS
     _0xproto
     font-awesome
@@ -364,7 +435,7 @@
     # glibc
     isabelle
     isabelle-components.isabelle-linter
-    feh
+
     # virtualbox
 
     ### Utilities
@@ -391,19 +462,18 @@
     # ghc
 
     (python3.withPackages (
-      python-pkgs:
-        with python-pkgs; [
-          # select Python packages here
-          # pandas
-          # requests
-          torch
-          torchvision
-          numpy
-          scikit-learn
-          matplotlib
-          notebook
-          # sklearn-deap
-        ]
+      python-pkgs: with python-pkgs; [
+        # select Python packages here
+        # pandas
+        # requests
+        torch
+        torchvision
+        numpy
+        scikit-learn
+        matplotlib
+        notebook
+        # sklearn-deap
+      ]
     ))
     # rust
     # go
@@ -476,10 +546,20 @@
     xdotool
     ripgrep
     # libreoffice-still
+
+    kmonad
+    evtest
+
+    pinta # Simple image editor
+
+    unrar-free # Unzip rar-files
+
+    time # time programs
+
+    pdfgrep
   ];
 }
 /*
- TODO:Overall things to fix
-- Sync flakes for configuration.nix and home.nix
+   TODO:Overall things to fix
+  - Sync flakes for configuration.nix and home.nix
 */
-

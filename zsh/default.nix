@@ -1,13 +1,16 @@
-{
-  ...
-}:
-
+{ pkgs, ... }:
 {
   programs = {
     # Jump directly to directory, without writing entire path
     zoxide = {
       enable = true;
       options = [ "--cmd j" ];
+    };
+
+    eza = {
+      enable = true;
+      icons = true;
+      git = true;
     };
 
     zsh = {
@@ -29,6 +32,13 @@
       };
       # autocd = true;
       dotDir = ".config/zsh";
+      plugins = [
+        {
+          name = "vi-mode"; # Improved vi-mode
+          src = pkgs.zsh-vi-mode;
+          file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
+        }
+      ];
       initExtra = "${builtins.readFile ./zshrc}";
     };
   };
