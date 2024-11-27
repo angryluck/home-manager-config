@@ -14,6 +14,9 @@
     ./polybar
   ];
 
+  # FIX: DELETE THIS!
+  home.enableNixpkgsReleaseCheck = false;
+
   # Let home-manager manage itself, required
   programs.home-manager.enable = true;
 
@@ -104,6 +107,17 @@
     userName = "angryluck";
     # Github email, maybe better to write own email, idk
     userEmail = "54353246+angryluck@users.noreply.github.com";
+    aliases = {
+      a = "add .";
+      cm = "commit -m";
+      cam = "!git add . && git commit -m";
+      ca = "!git add . && git commit -m 'empty'"; # commit with no msg
+      st = "status";
+      br = "branch";
+      co = "checkout"; # Still not sure what this does...
+      qp = "!git add . && git commit -m 'quick-commit' && git push";
+      # acp = "!git add . && git commit -m 'empty' && git push";
+    };
     extraConfig = {
       # Set push.autoSetupRemote to true
       push.autoSetupRemote = "true";
@@ -343,13 +357,13 @@
   # electron-version. Make sure to check
   # https://github.com/logseq/logseq/issues/10851, so that when it's fixed you
   # can delete this (electron 27 is marked as insecure).
-  nixpkgs.overlays = [
-    (final: prev: {
-      logseq = prev.logseq.override {
-        electron = prev.electron_27;
-      };
-    })
-  ];
+  # nixpkgs.overlays = [
+  #   (final: prev: {
+  #     logseq = prev.logseq.override {
+  #       electron = prev.electron_27;
+  #     };
+  #   })
+  # ];
 
   nixpkgs.config.permittedInsecurePackages = [
     "electron-27.3.11"
@@ -365,7 +379,12 @@
 
   # All user-packages, systemwide packages should go in configuration.nix
   home.packages = with pkgs; [
+    # UNFREE PACKAGES:
     discord
+    gh-copilot # Not as helpful as I thought...
+
+    # UNFREE END
+    gh
     # bitwarden-desktop # FIX: Some build dependency problem, check up on it
 
     # v1
@@ -557,9 +576,20 @@
     time # time programs
 
     pdfgrep
+
+    # nix-prefetch # get rev and sha256 of github-projects
+    # nurl # get rev and sha256 of github-projects
+
+    futhark
+    sshfs
+
+    openconnect
+    networkmanager-openconnect
+
+    # til dpp (hendrix server)
+    slurm
+
+    # Citations
+    zotero
   ];
 }
-/*
-   TODO:Overall things to fix
-  - Sync flakes for configuration.nix and home.nix
-*/

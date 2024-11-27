@@ -6,7 +6,7 @@ require("conform").setup({
     -- have a well standardized coding style. You can add additional
     -- languages here or re-enable it for the disabled ones.
     -- local disable_filetypes = { c = true, cpp = true }
-    local disable_filetypes = {}
+    local disable_filetypes = { fut = true, futhark = true }
     return {
       timeout_ms = 500,
       lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
@@ -17,9 +17,10 @@ require("conform").setup({
     haskell = { "fourmolu" },
     -- haskell = { "ormolu" },
     -- json = { "jq" },
-    -- c = { "clang-format" },
+    c = { "clang-format" },
     -- Conform can also run multiple formatters sequentially
-    python = { "yapf" }
+    python = { "yapf" },
+    fut = {},
     -- python = { "autopep8", "black" },
     -- latex = { "latexindent" },
     -- tex = { "latexindent" },

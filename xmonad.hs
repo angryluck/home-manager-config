@@ -158,7 +158,8 @@ myKeys =
     ("M-d", spawn "rofi -show drun"),
     -- , ("M-s", spawn "rofi -show file-browser-extended")
     ("M-s", spawn "rofi -show file-browser-extended -file-browser-dir Documents -file-browser-depth 0"),
-    ("M-c", spawn "rofi -show calc"),
+    -- ("M-c", spawn "rofi -show calc"),
+    ("M-c", spawn "rofi -show calc -modi calc -no-show-match -no-sort -calc-command \"echo -n '{result}' | xclip\""),
     ("M-0", spawn "rofi -show p -modi p:rofi-power-menu"),
     ("M-e", spawn "rofi modi emoji -show emoji -kb-custom1 Ctrl+c -emoji-mode insert_no_copy"),
     ("M-o", spawn "firefox"),

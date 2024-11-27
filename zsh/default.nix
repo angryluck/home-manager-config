@@ -20,7 +20,7 @@
       syntaxHighlighting.enable = true;
       shellAliases = {
         # ls = "ls --color --group-directories-first -F";
-        ls = "eza";
+        ls = "eza --group-directories-first";
         l = "eza -l --total-size --no-permissions --no-user -h";
         cp = "cp -i"; # Interactive
         df = "df -h";
@@ -40,6 +40,14 @@
           src = pkgs.zsh-vi-mode;
           file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
         }
+        # {
+        #   # will source zsh-autosuggestions.plugin.zsh
+        #   name = "manydots-magic";
+        #   src = pkgs.fetchFromGitHub {
+        #     owner = "knu";
+        #     repo = "zsh-manydots-magic";
+        #   };
+        # }
       ];
       initExtra = "${builtins.readFile ./zshrc}";
     };

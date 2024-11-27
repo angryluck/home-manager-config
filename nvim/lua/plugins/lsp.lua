@@ -27,20 +27,20 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 
 -- 1
-vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("lsp", { clear = true }),
-  callback = function(args)
-    -- 2
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      -- 3
-      buffer = args.buf,
-      callback = function()
-        -- 4 + 5
-        vim.lsp.buf.format { async = false, id = args.data.client_id }
-      end,
-    })
-  end
-})
+-- vim.api.nvim_create_autocmd("LspAttach", {
+--   group = vim.api.nvim_create_augroup("lsp", { clear = true }),
+--   callback = function(args)
+--     -- 2
+--     vim.api.nvim_create_autocmd("BufWritePre", {
+--       -- 3
+--       buffer = args.buf,
+--       callback = function()
+--         -- 4 + 5
+--         vim.lsp.buf.format { async = false, id = args.data.client_id }
+--       end,
+--     })
+--   end
+-- })
 
 
 -- Doesn't work, fix l8er
@@ -76,23 +76,38 @@ require('lspconfig').lua_ls.setup {
 --     }
 -- }
 
-require('lspconfig').nil_ls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+require("lspconfig").nixd.setup({
+  cmd = { "nixd" },
   settings = {
-    ['nil'] = {
+    nixd = {
+      nixpkgs = {
+        expr = "import <nixpkgs> { }",
+      },
       formatting = {
-        -- Re-add when https://github.com/neovim/neovim/pull/29601 is merged!
         command = { "nixfmt" },
-        -- command = { "alejandra" },
       },
     },
   },
-}
+})
 
+-- require('lspconfig').nil_ls.setup {
+--   on_attach = on_attach,
+--   capabilities = capabilities,
+--   settings = {
+--     ['nil'] = {
+--       formatting = {
+--         -- Re-add when https://github.com/neovim/neovim/pull/29601 is merged!
+--         command = { "nixfmt" },
+--         -- command = { "alejandra" },
+--       },
+--     },
+--   },
+-- }
+--
 -- require("lspconfig").fsautocomplete.setup {}
 
-require('lspconfig').ccls.setup {}
+-- require('lspconfig').ccls.setup {}
+require('lspconfig').clangd.setup {}
 
 require("lspconfig").pylsp.setup {
   settings = {
@@ -122,3 +137,5 @@ require("lspconfig").hls.setup({
 --     }
 --   }
 -- }
+
+require("lspconfig").futhark_lsp.setup {}

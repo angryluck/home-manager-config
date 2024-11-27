@@ -58,6 +58,23 @@ preexec() { echo -ne '\e[5 q' ;} # Use beam shape cursor for each new prompt.
 # Enable backspace in insertmode
 bindkey -v '^?' backward-delete-char
 
+
+### complicated aliases (functions):
+function arkiver() {
+    if [ $# -eq 1 ]; then
+        if [ -e "$1" ]; then
+            echo "Flytter $1 til 4-arkiv"
+            mv -i "$1" ~/Documents/4-arkiv/ # -i so asks before overwrite
+        else
+            echo "Error: $1 doesn't exist"
+        fi
+    else
+        echo "Wrong number of arguments ($#)"
+    fi
+}
+
+
+
 # PROMPT!
 PROMPT='%F{green}[%F{white}%B%3~%b%F{green}]%(!.#.$) %f'
 
@@ -75,5 +92,32 @@ bindkey '^[[13;5u' autosuggest-execute #Maps to CTRL+Enter, see alacritty
 # See https://stackoverflow.com/questions/16359878/how-to-map-shift-enter
 bindkey '^N' autosuggest-clear
 
+
+# expand-multiple-dots.zsh, see 
+# https://github.com/parkercoates/dotfiles/blob/main/.zsh/expand-multiple-dots.zsh
+
+# Based on http://stackoverflow.com/a/41420448/4757
+function expand-multiple-dots() {
+    local MATCH
+    if [[ $LBUFFER =~ '(^| )\.\.\.+' ]]; then
+        LBUFFER=$LBUFFER:fs%\.\.\.%../..%
+    fi
+}
+
+function expand-multiple-dots-then-expand-or-complete() {
+    zle expand-multiple-dots
+    zle expand-or-complete
+}
+
+function expand-multiple-dots-then-accept-line() {
+    zle expand-multiple-dots
+    zle accept-line
+}
+
+zle -N expand-multiple-dots
+zle -N expand-multiple-dots-then-expand-or-complete
+zle -N expand-multiple-dots-then-accept-line
+bindkey '^I' expand-multiple-dots-then-expand-or-complete
+bindkey '^M' expand-multiple-dots-then-accept-line
 
 eval "$(direnv hook zsh)"

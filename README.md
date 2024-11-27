@@ -1,5 +1,10 @@
-# home-manager-config
-My home-manager setup, for use on NixOS
-=======
-# AngryLuck's Home-Manager configuration
-My home-manager configuration, made to be used on NixOS.
+# Home Manager dotfiles
+*My personal Home Manger configuration for use on NixOS*
+## Cautions:
+1. Make sure to modify the `system = "x86_64-linux";` in `flake.nix` to match the
+   actual architecture
+2. XMonad configuration is in this repository, but xmonad is not started nor
+   installed by Home Manager - do this in `configuration.nix` instead.
+
+## TODOS:
+- [ ] Merge with the system-configuration (`/etc/nixos/`)

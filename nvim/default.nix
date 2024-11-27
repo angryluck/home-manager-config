@@ -4,18 +4,17 @@
   # vimUtils,
   # lib,
   ...
-}: {
+}:
+{
   nixpkgs = {
     overlays = [
       (final: prev: {
-        vimPlugins =
-          prev.vimPlugins
-          // {
-            own-isabelle-syn = prev.vimUtils.buildVimPlugin {
-              name = "isabelle-syn";
-              src = inputs.plugin-isabelle-syn;
-            };
+        vimPlugins = prev.vimPlugins // {
+          own-isabelle-syn = prev.vimUtils.buildVimPlugin {
+            name = "isabelle-syn";
+            src = inputs.plugin-isabelle-syn;
           };
+        };
       })
     ];
   };
@@ -25,6 +24,10 @@
     source = ./.;
     recursive = true;
   };
+
+  # For nixd:
+  # makes sure that <nixpkgs> refers to actual nixpkgs used for system
+  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
   # NOTE: If you make an init.lua in ./nvim, then below code doesn't run.
   # But the above lets us have an after/ftplugin/ folder!!!
@@ -41,11 +44,14 @@
     extraPackages = with pkgs; [
       # LSPs
       lua-language-server
-      nil
+      ### Replaced by nixd
+      # nil
+      nixd
+      nixfmt-rfc-style
       # HACK: Only until https://github.com/neovim/neovim/pull/29601
       # is merged
       # alejandra
-      nixfmt-rfc-style
+      # nixfmt-rfc-style
       fsautocomplete # FIX: Virker ikke :/
 
       # For copilot
@@ -53,49 +59,48 @@
 
       ### To fix haskell-lsp for xmonad
       (haskellPackages.ghcWithPackages (
-        hpkgs:
-          with hpkgs; [
-            # xmobar
-            xmonad
-            xmonad-contrib
-            # haskell-language-server
-            # fast-tags
-            # hoogle
-            # haskell-debug-adapter
-            # fourmolu
-          ]
+        hpkgs: with hpkgs; [
+          # xmobar
+          xmonad
+          xmonad-contrib
+          # haskell-language-server
+          # fast-tags
+          # hoogle
+          # haskell-debug-adapter
+          # fourmolu
+        ]
       ))
       haskellPackages.fourmolu
       haskellPackages.hoogle
       haskellPackages.haskell-language-server
 
-      ccls
+      # ccls
+      clang-tools_19 # clangd + clang-format
 
       # (python3.withPackages (
       (python3.withPackages (
-        python-pkgs:
-          with python-pkgs; [
-            # select Python packages here
-            # pandas
-            # requests
-            torch
-            torchvision
-            numpy
-            scikit-learn
-            matplotlib
-            # sklearn-deap
+        python-pkgs: with python-pkgs; [
+          # select Python packages here
+          # pandas
+          # requests
+          torch
+          torchvision
+          numpy
+          scikit-learn
+          matplotlib
+          # sklearn-deap
 
-            ### LSP-stuff:
-            python-lsp-server
-            rope
-            pyflakes
-            mccabe
-            pycodestyle
-            # pydocstyle
-            yapf
-            flake8
-            pylint
-          ]
+          ### LSP-stuff:
+          python-lsp-server
+          rope
+          pyflakes
+          mccabe
+          pycodestyle
+          # pydocstyle
+          yapf
+          flake8
+          pylint
+        ]
       ))
 
       tree-sitter
@@ -113,8 +118,9 @@
     # (string): Name of plugin, automatically passed when writing a string
     # rather than a table runtime (table): Files linked in nvim config folder,
     # can be used with ftplugin Use 'map' to set default 'type' for plugins
-    plugins = with pkgs.vimPlugins;
-      map (plugin: plugin // {type = plugin.type or "lua";}) [
+    plugins =
+      with pkgs.vimPlugins;
+      map (plugin: plugin // { type = plugin.type or "lua"; }) [
         # NOTE: 'opts' options in lazy.nvim config corresponds to passing the
         # options to '<Plugin>.config()' function.
 
@@ -135,37 +141,33 @@
 
         vim-nix
 
-        {
-          plugin = autoclose-nvim;
-          config =
-            #lua
-            ''
-              require('autoclose').setup({
-                keys = {
-                  ["'"] = { disabled_filetypes = { "nix" } }
-                },
-                options = {
-                  disabled_filetypes = { "tex" },
-                },
-              })
-            '';
-          #config = /* lua */ ''
-          #''
-        }
-
         # {
-        #   #FIX:  Fjern '' og `` (måske)
-        #
-        #   plugin = nvim-autopairs;
-        #     /*
-        #     lua
-        #     */
+        #   plugin = autoclose-nvim;
+        #   config =
+        #     #lua
         #     ''
-        #       require('nvim-autopairs').setup({
-        #         disable_filetype = {'tex'}
+        #       require('autoclose').setup({
+        #         keys = {
+        #           ["'"] = { disabled_filetypes = { "nix" } }
+        #         },
+        #         options = {
+        #           disabled_filetypes = { "tex" },
+        #         },
         #       })
         #     '';
+        #   #config = /* lua */ ''
+        #   #''
         # }
+
+        {
+          plugin = nvim-autopairs;
+          config = # lua
+            ''
+              require('nvim-autopairs').setup({
+                disable_filetype = {'tex'}
+              })
+            '';
+        }
 
         #FIX: neodev virker ikke i home-manger/nvim mappe.
         neodev-nvim # Archived, consider 'lazydev.nvim' instead
@@ -194,19 +196,19 @@
         # OR DOES IT?
         nvim-treesitter-refactor
         {
-          # plugin = nvim-treesitter.withAllGrammars;
-          plugin = (
-            nvim-treesitter.withPlugins (p: [
-              p.tree-sitter-nix
-              p.tree-sitter-vim
-              p.tree-sitter-lua
-              p.tree-sitter-bash
-              p.tree-sitter-c
-              p.tree-sitter-rasi # rofi syntax, maybe not needed
-              p.tree-sitter-haskell
-              p.tree-sitter-python
-            ])
-          );
+          plugin = nvim-treesitter.withAllGrammars;
+          # plugin = (
+          #   nvim-treesitter.withPlugins (p: [
+          #     p.tree-sitter-nix
+          #     p.tree-sitter-vim
+          #     p.tree-sitter-lua
+          #     p.tree-sitter-bash
+          #     p.tree-sitter-c
+          #     p.tree-sitter-rasi # rofi syntax, maybe not needed
+          #     p.tree-sitter-haskell
+          #     p.tree-sitter-python
+          #   ])
+          # );
           config = "${builtins.readFile ./lua/plugins/treesitter.lua}";
         }
 
@@ -217,9 +219,7 @@
         {
           plugin = leap-nvim;
           config =
-            /*
-            lua
-            */
+            # lua
             ''
               require('leap').create_default_mappings()
               require('leap.user').set_repeat_keys('<enter>', '<backspace>')
@@ -247,9 +247,7 @@
           #NOTE: Possible commands: NOTE, FIX, TOD, HACK, WARN, PERF & TEST.
           plugin = todo-comments-nvim;
           config =
-            /*
-            lua
-            */
+            # lua
             ''
               require('todo-comments').setup()
               vim.keymap.set("n", "]t", function()
@@ -320,12 +318,18 @@
               chat.setup({
                 -- debug = true,
                 window = {
-                  layout = 'float',
-                  relative = 'editor',
-                  border = 'rounded',
+                  layout = 'horizontal',
+                  height = 0.382, -- golden ratio
+                  -- relative = 'editor',
+                  -- border = 'rounded',
                 },
+                model = 'claude-3.5-sonnet',
+                auto_insert_mode = true,
               })
               vim.keymap.set('n', '<leader>co', chat.open, {silent = true})
+              vim.keymap.set('n', '<leader>ce', ':CopilotChatExplain<CR>', {silent = true})
+              vim.keymap.set('n', '<leader>cf', ':CopilotChatFix<CR>', {silent = true})
+              vim.keymap.set('n', '<leader>cr', ':CopilotChatReview<CR>', {silent = true})
               -- with argument:
               -- vim.keymap.set('n', '<leader>co', function() chat.open('your_argument') end)
               -- or
@@ -363,9 +367,7 @@
         {
           plugin = nvim-colorizer-lua;
           config =
-            /*
-            lua
-            */
+            # lua
             ''
               require('colorizer').setup({
                 user_default_options = { names = false }
@@ -377,6 +379,36 @@
         # isabelle-lsp.lua (skal stadig have det til at virke)
         own-isabelle-syn
         # (plugin "Treeniks/isabelle-lsp.nvim")
+
+        {
+          plugin = tabout-nvim;
+          config =
+            # lua
+            ''
+              require('tabout').setup {
+                tabkey = '<Tab>', -- key to trigger tabout, set to an empty string to disable
+                backwards_tabkey = '<S-Tab>', -- key to trigger backwards tabout, set to an empty string to disable
+                act_as_tab = true, -- shift content if tab out is not possible
+                act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
+                default_tab = '<C-t>', -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
+                default_shift_tab = '<C-d>', -- reverse shift default action,
+                enable_backwards = true, -- well ...
+                completion = false, -- if the tabkey is used in a completion pum
+                tabouts = {
+                  { open = "'", close = "'" },
+                  { open = '"', close = '"' },
+                  { open = '`', close = '`' },
+                  { open = '(', close = ')' },
+                  { open = '[', close = ']' },
+                  { open = '{', close = '}' }
+                },
+                ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
+                exclude = {} -- tabout will ignore these filetypes
+              }
+            '';
+        }
+
+        futhark-vim
       ];
   };
 }
