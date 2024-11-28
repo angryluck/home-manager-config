@@ -13,6 +13,7 @@
     };
     plugin-isabelle-syn.url = "github:Treeniks/isabelle-syn.nvim";
     plugin-isabelle-syn.flake = false;
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
   outputs =
@@ -26,6 +27,9 @@
       system = "x86_64-linux";
       stablePkgs = nixpkgs-stable.legacyPackages.${system};
       pkgs = nixpkgs.legacyPackages.${system};
+      overlays = [
+        inputs.neovim-nightly-overlay.overlays.default
+      ];
     in
     {
       homeConfigurations."angryluck" = home-manager.lib.homeManagerConfiguration {
@@ -42,7 +46,10 @@
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
-        modules = [ ./home.nix ];
+        modules = [ 
+          ./home.nix
+          {nixpkgs.overlays = overlays;}
+        ];
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix

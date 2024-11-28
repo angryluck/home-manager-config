@@ -33,6 +33,7 @@
   # But the above lets us have an after/ftplugin/ folder!!!
   programs.neovim = {
     enable = true;
+    package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
     defaultEditor = true;
     vimAlias = true;
     extraLuaConfig = ''

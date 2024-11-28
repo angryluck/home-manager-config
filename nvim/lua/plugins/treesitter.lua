@@ -1,8 +1,8 @@
 require('nvim-treesitter.configs').setup({
   auto_install = false,
   -- highlight {
-  --     enable = true,
-  --     --     --     disable = { "latex" },
+  --   enable = true,
+  highlight = { enable = true, disable = { "latex" }, },
   -- },
   incremental_selection = {
     enable = true,

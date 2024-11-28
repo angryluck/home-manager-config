@@ -1,4 +1,6 @@
 # Home Manager dotfiles
+ARCHIVED - this repo has been merged with my system-configuration, and will no
+longer be updated. See [nixos-config](https://github.com/angryluck/nixos-config) instead
 *My personal Home Manger configuration for use on NixOS*
 ## Cautions:
 1. Make sure to modify the `system = "x86_64-linux";` in `flake.nix` to match the
@@ -7,4 +9,4 @@
    installed by Home Manager - do this in `configuration.nix` instead.
 
 ## TODOS:
-- [ ] Merge with the system-configuration (`/etc/nixos/`)
+- [x] Merge with the system-configuration (`/etc/nixos/`)
